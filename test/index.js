@@ -1,67 +1,52 @@
-var widgetContent = `
-<div class="floating-chat">
+var getWidgetContent = function(notes) {
+  let notesListElm = notes.map(note => {
+    return `<li class="self">${note}</li>`;
+  });
+
+  return `<div class="floating-chat">
     <i class="fa fa-comments" aria-hidden="true"></i>
     <div class="chat">
         <div class="header">
             <span class="title">
-                what's on your mind?
+              Notes
             </span>
             <button>
                 <i class="fa fa-minus" aria-hidden="true"></i>
             </button>
         </div>
         <ul class="messages">
-            <li class="other">asdasdasasdasdasasdasdasasdasdasasdasdasasdasdasasdasdas</li>
-            <li class="other">Are we dogs??? 🐶</li>
-            <li class="self">no... we're human</li>
-            <li class="other">are you sure???</li>
-            <li class="self">yes.... -___-</li>
-            <li class="other">if we're not dogs.... we might be monkeys 🐵</li>
-            <li class="self">i hate you</li>
-            <li class="other">don't be so negative! here's a banana 🍌</li>
-            <li class="self">......... -___-</li>
+          ${notesListElm}
         </ul>
         <div class="footer">
             <div class="text-box" contenteditable="true" disabled="true"></div>
-            <button id="sendMessage">send</button>
+            <button id="sendMessage">Save</button>
         </div>
     </div>
-</div>
-`;
+  </div>`;
+};
 
-$('body').prepend(widgetContent);
-
-var element = $('.floating-chat');
-
-// Entry point
-element.click(openElement);
+var currentUrl = location.href;
 
 var myStorage = chrome.storage.local;
-myStorage.get('chatID', function(chatID) {
-  if (!chatID) {
-    myStorage.set('chatID', createUUID());
-  }
+
+myStorage.get(currentUrl, function(notes) {
+  console.log('notes: ', notes);
+  notes = Object.keys(notes).length === 0 ? [] : notes[currentUrl];
+
+  $('body').prepend(getWidgetContent(notes));
+
+  var element = $('.floating-chat');
+
+  // Entry point
+  element.click(openElement);
+
+  setTimeout(function() {
+    element.addClass('enter');
+  }, 1000);
 });
 
-setTimeout(function() {
-  element.addClass('enter');
-}, 1000);
-
-// $('a').click(function() {
-//   alert("Hey there");
-// })
-
-// var element = $('.floating-chat');
-// var myStorage = localStorage;
-
-// if (!myStorage.getItem('chatID')) {
-//   myStorage.setItem('chatID', createUUID());
-// }
-
 function openElement() {
-  myStorage.get('chatID', function(chatID) {
-    console.log('chatID: ', chatID);
-  });
+  var element = $('.floating-chat');
 
   var messages = element.find('.messages');
   var textInput = element.find('.text-box');
@@ -80,6 +65,8 @@ function openElement() {
 }
 
 function closeElement() {
+  var element = $('.floating-chat');
+
   element
     .find('.chat')
     .removeClass('enter')
@@ -127,6 +114,16 @@ function sendNewMessage() {
     .replace(/\n/g, '<br>');
 
   if (!newMessage) return;
+
+  var url = location.href;
+  myStorage.get(url, function(notes) {
+    notes = Object.keys(notes).length === 0 ? [] : notes[currentUrl];
+    notes.push(newMessage);
+
+    var saveObj = {};
+    saveObj[url] = notes;
+    myStorage.set(saveObj);
+  });
 
   var messagesContainer = $('.messages');
 
