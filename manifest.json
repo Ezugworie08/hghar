@@ -1,0 +1,46 @@
+{
+  "manifest_version": 2,
+
+  "name": "hghar",
+  "description": "Leave comments for yourself on web pages",
+  "version": "0.0.1",
+  "author": "Ike Ezugworie",
+  "icons": {
+    "128": "icons/favicon.ico"
+  },
+
+  "browser_action": {
+    "default_title": "hghar",
+    "default_icon": "icons/favicon.ico"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "https://www.google.com/robots.txt*"
+      ],
+      "css": ["test/index.css"],
+      "js": ["test/jquery-3.3.1.min.js", "test/index.js"]
+    }
+  ],
+
+  "permissions": [
+    "identity",
+    "tabs",
+    "storage",
+    "clipboardRead",
+    "notifications",
+    "webRequest",
+    "webRequestBlocking",
+    "https://fonts.googleapis.com/",
+    "https://github.com/",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://apis.google.com/; object-src 'self'",
+
+  "minimum_chrome_version": "42"
+}
