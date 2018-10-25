@@ -3,34 +3,52 @@ var getWidgetContent = function(notes) {
     return `<li class="self">${note}</li>`;
   });
 
-  return `<div class="floating-chat">
-    <i class="fa fa-comments" aria-hidden="true"></i>
-    <div class="chat">
+  return `<!DOCTYPE html>
+  <html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" async href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" async href="./index.css" />
+
+  </head>
+
+  <body>
+    <div class="floating-chat">
+      <i class="fas fa-edit" aria-hidden="true"></i>
+      <div class="chat">
         <div class="header">
-            <span class="title">
-              Notes
-            </span>
-            <button>
-                <i class="fa fa-minus" aria-hidden="true"></i>
-            </button>
+          <span class="title">
+            QUIPS
+          </span>
+          <button>
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
+
         </div>
         <ul class="messages">
           ${notesListElm}
         </ul>
         <div class="footer">
-            <div class="text-box" contenteditable="true" disabled="true"></div>
-            <button id="sendMessage">Save</button>
+          <div class="text-box" contenteditable="true" disabled="true"></div>
+          <button id="sendMessage">send</button>
         </div>
+      </div>
     </div>
-  </div>`;
+  </body>
+
+  </html>`;
 };
+
+// Ike's code begins
 
 var currentUrl = location.href;
 
-var myStorage = chrome.storage.local;
+var myStorage = chrome.storage;
 
-myStorage.get(currentUrl, function(notes) {
-  console.log('notes: ', notes);
+myStorage.sync.get(currentUrl, function(notes) {
+  // console.log("notes: ", notes);
   notes = Object.keys(notes).length === 0 ? [] : notes[currentUrl];
 
   $('body').prepend(getWidgetContent(notes));
@@ -44,6 +62,15 @@ myStorage.get(currentUrl, function(notes) {
     element.addClass('enter');
   }, 1000);
 });
+
+// console.log('My Storage =>', myStorage);
+
+myStorage.onChanged.addListener(function(notes, storageName) {
+  chrome.browserAction.setBadgeText({
+    text: notes[currentUrl].length.toString(),
+  });
+});
+// Ike's code ends
 
 function openElement() {
   var element = $('.floating-chat');
@@ -89,21 +116,6 @@ function closeElement() {
   }, 500);
 }
 
-function createUUID() {
-  // http://www.ietf.org/rfc/rfc4122.txt
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-  for (var i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
-  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-  s[8] = s[13] = s[18] = s[23] = '-';
-
-  var uuid = s.join('');
-  return uuid;
-}
-
 function sendNewMessage() {
   var userInput = $('.text-box');
   var newMessage = userInput
@@ -114,16 +126,20 @@ function sendNewMessage() {
     .replace(/\n/g, '<br>');
 
   if (!newMessage) return;
-
+  // Ike's code begins
   var url = location.href;
-  myStorage.get(url, function(notes) {
+  myStorage.sync.get(url, function(notes) {
     notes = Object.keys(notes).length === 0 ? [] : notes[currentUrl];
     notes.push(newMessage);
 
     var saveObj = {};
     saveObj[url] = notes;
-    myStorage.set(saveObj);
+    myStorage.sync.set(saveObj, function() {
+      // console.log('Something happend.');
+    });
   });
+
+  // Ike's code ends
 
   var messagesContainer = $('.messages');
 

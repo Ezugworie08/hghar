@@ -6,12 +6,16 @@
   "version": "0.0.1",
   "author": "Ike Ezugworie",
   "icons": {
-    "128": "icons/favicon.ico"
+    "128": "icons/favicon.png"
   },
-
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlVDHgxrrJ89iDGnY7dVcx8fAssg4McNn+r0u/c6ovar5ozLHF0vOo6sfYecbH1lz3uRovQ1MQSIyvQJWJbJDCHYXOh9NbSxccGds0XOfsYEt73MZ6mHRHjrqgBDqVtT31REVAnE2Fxq9ulwpqF7vNVrGub11OMo0HQDJppO3vP4JOiCAoNqja+B+JJMwdJ/gtwcIKMxDBO5WcifndW2PupCAces63lrkAtok9diCRU/RYQsb8Dyh2TDbhvtHcORo+pddMd5E/NnIIXX0GOiFvr/VGvF0yrzIWQf65+2JP4yCbIcdzpPLYfWbEvGk5Vral9Sgsg2pyJjaiAfRjq6ZgQIDAQAB",
+  "oauth2": {
+    "client_id": "946104220756-g83q8olnduambr5h8pvvt6vnvqi9di8g.apps.googleusercontent.com",
+    "scopes": ["email", "profile"]
+  },
   "browser_action": {
-    "default_title": "hghar",
-    "default_icon": "icons/favicon.ico"
+    "default_title": "hghar - Leave comments for yourself.",
+    "default_icon": "icons/favicon.png"
   },
 
   "content_scripts": [
@@ -21,11 +25,10 @@
         "https://*/*",
         "https://www.google.com/robots.txt*"
       ],
-      "css": ["test/index.css"],
-      "js": ["test/jquery-3.3.1.min.js", "test/index.js"]
+      "css": ["contentscripts/index.css"],
+      "js": ["contentscripts/jquery-3.3.1.min.js", "contentscripts/index.js"]
     }
   ],
-
   "permissions": [
     "identity",
     "tabs",
@@ -37,10 +40,12 @@
     "https://fonts.googleapis.com/",
     "https://github.com/",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "https://www.googleapis.com/*",
+    "https://accounts.google.com/o/oauth2/token"
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://apis.google.com/; object-src 'self'",
 
-  "minimum_chrome_version": "42"
+  "minimum_chrome_version": "55"
 }

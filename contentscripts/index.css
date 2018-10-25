@@ -1,7 +1,7 @@
-body {
+/* body {
   background: skyblue;
   font: 12px/16px 'Noto Sans', sans-serif;
-}
+} */
 .floating-chat {
   cursor: pointer;
   display: flex;
@@ -152,7 +152,7 @@ body {
   height: 0;
   border-top: 10px solid rgba(25, 147, 147, 0.2);
 }
-.floating-chat .chat .messages li.other {
+/* .floating-chat .chat .messages li.other {
   animation: show-chat-odd 0.15s 1 ease-in;
   -moz-animation: show-chat-odd 0.15s 1 ease-in;
   -webkit-animation: show-chat-odd 0.15s 1 ease-in;
@@ -167,7 +167,7 @@ body {
 .floating-chat .chat .messages li.other:after {
   border-right: 10px solid transparent;
   right: -10px;
-}
+} */
 .floating-chat .chat .messages li.self {
   animation: show-chat-even 0.15s 1 ease-in;
   -moz-animation: show-chat-even 0.15s 1 ease-in;
